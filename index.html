@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>红色小英雄 · 六块国旗拼图·有声绘本</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fff5e9 0%, #ffe6d5 100%);
+            font-family: 'Comic Neue', 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI Emoji', 'Apple Color Emoji', cursive, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            max-width: 1300px;
+            width: 100%;
+            background: rgba(255, 250, 240, 0.9);
+            border-radius: 80px 80px 70px 70px;
+            box-shadow: 0 20px 35px rgba(180, 60, 30, 0.2), 0 8px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .hero-header {
+            background: #e34234;
+            background-image: radial-gradient(circle at 10% 30%, rgba(255,215,0,0.2) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+            padding: 20px 20px 15px 20px;
+            text-align: center;
+            color: #fff9e0;
+            border-bottom: 5px solid #ffcd7e;
+        }
+
+        .hero-header h1 {
+            margin: 0;
+            font-size: 2.3rem;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 0 #b32d20;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-header p {
+            font-size: 1.2rem;
+            margin: 8px 0 0;
+            opacity: 0.95;
+            font-weight: bold;
+        }
+
+        .game-menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            padding: 25px 20px 15px;
+            background: #fff2e6;
+            border-bottom: 2px dashed #ffb882;
+        }
+
+        .game-tab {
+            background: #ffffffdd;
+            backdrop-filter: blur(4px);
+            border: none;
+            border-radius: 60px;
+            padding: 12px 28px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            font-family: inherit;
+            color: #bc3f2e;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #d98f6e;
+            transition: 0.08s linear;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff2e8;
+        }
+
+        .game-tab:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #d98f6e;
+        }
+
+        .game-tab.active {
+            background: #ffc49b;
+            color: #a03322;
+            box-shadow: 0 4px 0 #b75a3a;
+            transform: translateY(2px);
+        }
+
+        .game-area {
+            padding: 30px 24px 40px;
+            min-height: 550px;
+        }
+
+        .game-panel {
+            display: none;
+            animation: fadeSlide 0.3s ease-out;
+        }
+
+        .game-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .game-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #c53a1f;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #ffefcf;
+            display: inline-block;
+            width: auto;
+            padding: 0 30px;
+            border-radius: 60px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 8px #ffcf9a;
+        }
+
+        .feedback {
+            background: #fffaec;
+            border-radius: 50px;
+            padding: 12px 20px;
+            margin: 20px auto 0;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #c5452a;
+            font-weight: bold;
+            max-width: 90%;
+            border-left: 12px solid #f7b05e;
+            border-right: 12px solid #f7b05e;
+        }
+
+        .btn-reset, .btn-next {
+            background: #ffb882;
+            border: none;
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 8px 24px;
+            border-radius: 40px;
+            color: #632d1c;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #b45a34;
+        }
+
+        .btn-reset:active, .btn-next:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #b45a34;
+        }
+
+        /* 认识国旗卡片 */
+        .flags-box {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 35px;
+            margin: 30px 0;
+        }
+        .flag-card {
+            background: white;
+            border-radius: 35px;
+            padding: 20px 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            width: 180px;
+            transition: transform 0.1s;
+            box-shadow: 0 12px 18px rgba(0,0,0,0.1);
+            border: 3px solid #ffe1b3;
+        }
+        .flag-card:active { transform: scale(0.96);}
+        .flag-emoji {
+            font-size: 85px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .flag-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #b3472c;
+        }
+
+        /* 绘本卡片 - 精美插图升级 */
+        .bookshelf {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .book-card {
+            background: #fff6e8;
+            border-radius: 45px;
+            width: 260px;
+            padding: 20px 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 16px 20px rgba(160, 70, 20, 0.15);
+            border: 3px solid #ffcb99;
+        }
+        .book-card:active { transform: scale(0.97); background: #ffe1c4;}
+        .book-illustration {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 12px;
+            background: #fff1e0;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 0 3px white, 0 6px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .book-illustration canvas, .book-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 38px;
+        }
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: #ffdbb5;
+            border-radius: 60px;
+            padding: 6px 12px;
+            margin-top: 12px;
+            display: inline-block;
+        }
+        .sound-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f5bc8e;
+            border-radius: 50px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            color: #592c1a;
+            font-weight: bold;
+        }
+        .sound-badge::before {
+            content: "🔊";
+            font-size: 1rem;
+        }
+
+        /* 拼图区域 - 3x2 六块标准比例 */
+        .puzzle-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0;
+        }
+        .puzzle-board {
+            background: #ffedd9;
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: inset 0 0 0 4px #fff2c9, 0 12px 20px rgba(0,0,0,0.1);
+        }
+        .grid-3x2 {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(2, 100px);
+            gap: 12px;
+            background: #efc69e;
+            padding: 16px;
+            border-radius: 35px;
+        }
+        .slot {
+            background: #fdf1df;
+            border-radius: 25px;
+            border: 3px dashed #d97a48;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.05s linear;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .slot.filled {
+            border: 3px solid #5cad47;
+            background: #fef5e3;
+            cursor: default;
+        }
+        .slot img {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+        .puzzle-pieces {
+            background: #ffe2c9;
+            border-radius: 45px;
+            padding: 20px;
+            min-width: 280px;
+        }
+        .pieces-list {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 12px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .piece-item {
+            width: 100px;
+            height: 100px;
+            background: #fbe6cf;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.05s linear;
+            box-shadow: 0 6px 0 #bd7a56;
+            border: 2px solid white;
+            overflow: hidden;
+        }
+        .piece-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .piece-item:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #bd7a56;
+        }
+        .selected-piece {
+            outline: 5px solid #ffb347;
+            background: #ffddb0;
+            transform: scale(0.98);
+        }
+
+        /* 问答区 */
+        .quiz-box {
+            background: #fff1e2;
+            border-radius: 70px;
+            padding: 20px 25px;
+            margin-top: 10px;
+        }
+        .quiz-question {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            background: #ffdaaa;
+            border-radius: 70px;
+            padding: 18px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin: 35px 0;
+        }
+        .quiz-opt {
+            background: #f2cd9c;
+            border-radius: 60px;
+            padding: 14px 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #632514;
+            cursor: pointer;
+            min-width: 160px;
+            text-align: center;
+            transition: 0.05s linear;
+            box-shadow: 0 6px 0 #a76741;
+        }
+        .quiz-opt:active { transform: translateY(3px); box-shadow: 0 2px 0 #a76741;}
+
+        @media (max-width: 680px) {
+            .game-tab { padding: 8px 16px; font-size: 1rem;}
+            .grid-3x2 { grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(2, 80px); gap: 8px; padding: 12px;}
+            .pieces-list { grid-template-columns: repeat(3, 80px); gap: 8px; }
+            .piece-item { width: 80px; height: 80px; }
+            .slot { font-size: 1.6rem; }
+            .quiz-question { font-size: 1.3rem;}
+            .quiz-opt { font-size: 1rem; padding: 10px 20px;}
+            .game-title { font-size: 1.5rem;}
+            .book-card { width: 220px; }
+            .book-illustration { width: 110px; height: 110px; }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            background: #ffefe2;
+            padding: 12px;
+            color: #a5482c;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="hero-header">
+        <h1>⭐ 红色小英雄乐园 ⭐</h1>
+        <p>❤️ 爱国启蒙 · 六块拼图·有声绘本 ❤️</p>
+    </div>
+
+    <div class="game-menu">
+        <button class="game-tab active" data-game="flag">🇨🇳 认识国旗</button>
+        <button class="game-tab" data-game="book">📚 有声绘本</button>
+        <button class="game-tab" data-game="puzzle">🧩 国旗拼图(6块)</button>
+        <button class="game-tab" data-game="quiz">🎓 英雄小问答</button>
+    </div>
+
+    <div class="game-area">
+        <!-- 认识国旗模块 (emoji跨平台) -->
+        <div id="flagPanel" class="game-panel active-panel">
+            <div class="game-title">🇨🇳 找一找中国国旗 🇨🇳</div>
+            <div class="flags-box" id="flagsContainer"></div>
+            <div id="flagFeedback" class="feedback">⭐ 点击中间的五星红旗！ ⭐</div>
+            <div style="text-align: center;"><button class="btn-reset" id="resetFlagBtn">再来一次 🔄</button></div>
+        </div>
+
+        <!-- 有声绘本模块：精美插图+语音 -->
+        <div id="bookPanel" class="game-panel">
+            <div class="game-title">📖 会讲故事的红色绘本 📖</div>
+            <div class="bookshelf" id="booksContainer"></div>
+            <div id="bookFeedback" class="feedback">✨ 点击绘本插图，欣赏精美图画并聆听英雄故事 ✨</div>
+            <div style="text-align: center;"><button class="btn-reset" id="resetBookBtn">再认识一次 📚</button></div>
+        </div>
+
+        <!-- 国旗拼图模块：标准比例 300x200，分割为3x2六块 -->
+        <div id="puzzlePanel" class="game-panel">
+            <div class="game-title">🧩 五星红旗拼图 (6块) 🧩</div>
+            <div class="puzzle-area">
+                <div class="puzzle-board">
+                    <div class="grid-3x2" id="puzzleSlots"></div>
+                </div>
+                <div class="puzzle-pieces">
+                    <div style="text-align:center; font-weight:bold;">✨ 点击碎片，再点击空位 ✨</div>
+                    <div class="pieces-list" id="puzzlePiecesList"></div>
+                </div>
+            </div>
+            <div id="puzzleFeedback" class="feedback">🐣 把右边的小碎片拼到左边正确的位置，组成庄严的五星红旗！</div>
+            <div style="text-align: center;"><button class="btn-reset" id="resetPuzzleBtn">🔄 新拼图</button></div>
+        </div>
+
+        <!-- 英雄小问答 -->
+        <div id="quizPanel" class="game-panel">
+            <div class="game-title">🎖️ 聪明宝贝答问题 🎖️</div>
+            <div class="quiz-box">
+                <div class="quiz-question" id="quizQuestion">小英雄王二小的故事发生在哪里？</div>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div id="quizFeedback" class="feedback">💪 选一选，学习小英雄！</div>
+                <div style="text-align: center;"><button class="btn-next" id="nextQuizBtn">下一题 ➡️</button></div>
+            </div>
+        </div>
+    </div>
+    <footer>❤️ 红色基因代代传 · 五星红旗在我心 · 绘本有声又有画 ❤️</footer>
+</div>
+
+<script>
+    // --------------------- 语音助手 (点击绘本播放) ---------------------
+    let currentUtterance = null;
+    function playStoryVoice(text) {
+        if (currentUtterance) window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-CN';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.1;
+        utterance.volume = 1;
+        currentUtterance = utterance;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // --------------------- 认识国旗 (使用通用emoji，确保跨设备) ---------------------
+    const flagsData = [
+        { name: "🇨🇳 中国国旗", emoji: "🇨🇳", isChina: true, desc: "五星红旗，我们的国旗！" },
+        { name: "🇺🇸 美国国旗", emoji: "🇺🇸", isChina: false, desc: "星条旗" },
+        { name: "🇬🇧 英国国旗", emoji: "🇬🇧", isChina: false, desc: "米字旗" }
+    ];
+    function renderFlags() {
+        const container = document.getElementById('flagsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        flagsData.forEach(flag => {
+            const card = document.createElement('div');
+            card.className = 'flag-card';
+            card.innerHTML = `<span class="flag-emoji">${flag.emoji}</span><span class="flag-name">${flag.name}</span>`;
+            card.addEventListener('click', () => {
+                if (flag.isChina) {
+                    showFeedback('flagFeedback', '🎉 太棒啦！这是五星红旗，祖国的象征！ 🇨🇳 真聪明！', true);
+                    addStarEffect(card);
+                } else {
+                    showFeedback('flagFeedback', '🌱 再试试看～ 哪一面是五星红旗呢？ 中国国旗是红色的，有五颗金星！', false);
+                }
+            });
+            container.appendChild(card);
+        });
+    }
+
+    // --------------------- 绘本模块：精美手绘插图 (Canvas绘图，高质量) ---------------------
+    function drawYulaiIllustration(ctx, w, h) {
+        // 雨来游泳场景
+        ctx.fillStyle = '#c1e0ff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#6c8cbf';
+        ctx.beginPath(); ctx.ellipse(w/2, h-20, w*0.4, 18, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#ffd966';
+        ctx.beginPath(); ctx.arc(w/2, h-38, 18, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#a5673f';
+        ctx.fillRect(w/2-12, h-58, 24, 20);
+        ctx.fillStyle = '#000';
+        ctx.beginPath(); ctx.arc(w/2-6, h-48, 2, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(w/2+6, h-48, 2, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#ff8c5a';
+        ctx.beginPath(); ctx.ellipse(w/2, h-42, 5, 3, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#3b5c3a';
+        ctx.font = `bold ${Math.floor(w*0.18)}px "Segoe UI Emoji"`;
+        ctx.fillText("🌊🐟", w-30, h-12);
+    }
+    function drawJimaoxinIllustration(ctx, w, h) {
+        ctx.fillStyle = '#ffefc0';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#b97f44';
+        ctx.fillRect(w*0.3, h*0.5, w*0.4, h*0.2);
+        ctx.fillStyle = '#f5bc70';
+        ctx.beginPath(); ctx.ellipse(w*0.5, h*0.45, 18, 14, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#e8b55a';
+        ctx.fillRect(w*0.45, h*0.35, 12, 20);
+        ctx.fillStyle = '#8b5a2b';
+        ctx.font = `${Math.floor(w*0.2)}px "Segoe UI Emoji"`;
+        ctx.fillText("✉️", w*0.7, h*0.7);
+        ctx.fillText("🐑", w*0.2, h*0.75);
+        ctx.fillStyle = '#d2691e';
+        ctx.fillRect(w*0.6, h*0.6, 8, 20);
+    }
+    function drawHongxingIllustration(ctx, w, h) {
+        ctx.fillStyle = '#ffcd94';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#e32119';
+        const cx = w/2, cy = h/2;
+        const outerR = w*0.28, innerR = w*0.12;
+        let rot = Math.PI/2*3;
+        let step = Math.PI/5;
+        ctx.beginPath();
+        for (let i=0; i<5; i++) {
+            let x1 = cx + Math.cos(rot) * outerR;
+            let y1 = cy + Math.sin(rot) * outerR;
+            ctx.lineTo(x1, y1);
+            rot += step;
+            let x2 = cx + Math.cos(rot) * innerR;
+            let y2 = cy + Math.sin(rot) * innerR;
+            ctx.lineTo(x2, y2);
+            rot += step;
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${Math.floor(w*0.22)}px "Segoe UI Emoji"`;
+        ctx.fillText("⭐", w*0.75, h*0.8);
+        ctx.fillStyle = '#8b4513';
+        ctx.fillRect(w*0.2, h*0.7, w*0.15, h*0.1);
+    }
+    function createBookIllustration(type, width=140, height=140) {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (type === 'yulai') drawYulaiIllustration(ctx, width, height);
+        else if (type === 'jimaoxin') drawJimaoxinIllustration(ctx, width, height);
+        else drawHongxingIllustration(ctx, width, height);
+        return canvas;
+    }
+    const booksData = [
+        { id:0, title:"📘 小英雄雨来", desc:"游泳高手，智斗鬼子", storyVoice:"小英雄雨来，他游泳特别厉害，为了掩护交通员叔叔，勇敢地和日本鬼子作斗争，最后机智地跳进河里逃脱了！真是一个了不起的小英雄！", type:"yulai" },
+        { id:1, title:"✉️ 鸡毛信", desc:"海娃巧藏信件", storyVoice:"儿童团团长海娃，把重要的鸡毛信藏在绵羊尾巴下面，躲过了鬼子的搜查，成功把信送到八路军手中，真是一个机智勇敢的小英雄！", type:"jimaoxin" },
+        { id:2, title:"⭐ 闪闪的红星", desc:"潘冬子革命少年", storyVoice:"潘冬子有一颗闪闪的红星，他勇敢地和敌人斗争，帮助红军游击队，最后戴上红星成为了真正的小红军战士！", type:"hongxing" }
+    ];
+    let bookClickStatus = [false, false, false];
+    function renderBooks() {
+        const container = document.getElementById('booksContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        booksData.forEach((book, idx) => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            const illustCanvas = createBookIllustration(book.type, 140, 140);
+            const imgDataUrl = illustCanvas.toDataURL();
+            card.innerHTML = `
+                <div class="book-illustration"><img src="${imgDataUrl}" alt="绘本插图"></div>
+                <div class="book-title">${book.title}</div>
+                <div class="sound-badge">🔊 点我听故事</div>
+            `;
+            card.addEventListener('click', () => {
+                playStoryVoice(book.storyVoice);
+                showFeedback('bookFeedback', `🔊 正在讲述：《${book.title}》 ${book.desc}`, true);
+                addStarEffect(card);
+                if (!bookClickStatus[idx]) {
+                    bookClickStatus[idx] = true;
+                    if (bookClickStatus.every(v=>v===true)) setTimeout(()=> showFeedback('bookFeedback','🎉 你听完了所有红色绘本故事！真是爱国小英雄！ 🎉',true),1200);
+                }
+            });
+            container.appendChild(card);
+        });
+    }
+    function resetBooks() { bookClickStatus = [false,false,false]; showFeedback('bookFeedback','✨ 点击精美插图，聆听英雄故事 ✨',false); renderBooks(); }
+
+    // --------------------- 国旗拼图：标准比例 300x200，分割为3x2六块 ---------------------
+    // 绘制严谨五星红旗 (宽300，高200，符合标准比例)
+    function drawStrictFlag(ctx, width, height) {
+        ctx.fillStyle = '#EE1C25';
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = '#FFDE00';
+        // 大五角星 (位置: 左上方，中心约(45,45)相对300x200)
+        function drawStar(cx, cy, outerR, innerR, rotation=0) {
+            let step = Math.PI/5;
+            let rot = Math.PI/2*3 + rotation;
+            ctx.beginPath();
+            for(let i=0;i<5;i++) {
+                let x1 = cx + Math.cos(rot)*outerR;
+                let y1 = cy + Math.sin(rot)*outerR;
+                ctx.lineTo(x1, y1);
+                rot += step;
+                let x2 = cx + Math.cos(rot)*innerR;
+                let y2 = cy + Math.sin(rot)*innerR;
+                ctx.lineTo(x2, y2);
+                rot += step;
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+        drawStar(45, 45, 16, 6, 0);
+        // 四颗小星
+        const smallStars = [
+            {cx: 85, cy: 25, angle: Math.atan2(45-25, 45-85)},
+            {cx: 102, cy: 48, angle: Math.atan2(45-48, 45-102)},
+            {cx: 90, cy: 75, angle: Math.atan2(45-75, 45-90)},
+            {cx: 68, cy: 88, angle: Math.atan2(45-88, 45-68)}
+        ];
+        for(let s of smallStars) {
+            const rot = s.angle + Math.PI/2;
+            drawStar(s.cx, s.cy, 8, 3, rot);
+        }
+        // 添加可爱小标记
+        ctx.fillStyle = '#FFB347';
+        ctx.font = "14px 'Segoe UI Emoji'";
+        ctx.fillText("❤️", width-22, height-10);
+    }
+    let originalFlagDataURL = null;
+    let puzzlePieces = [];   // 6个碎片的dataURL
+    let puzzleSlotsState = new Array(6).fill(null);
+    let piecesRemaining = [0,1,2,3,4,5];
+    let currentSelectedPiece = null;
+    let puzzleCompleted = false;
+
+    async function generateFlagPuzzle() {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 300;
+            canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+            drawStrictFlag(ctx, 300, 200);
+            resolve(canvas.toDataURL());
+        });
+    }
+    async function initPuzzleGame() {
+        if (!originalFlagDataURL) {
+            originalFlagDataURL = await generateFlagPuzzle();
+        }
+        const img = new Image();
+        img.src = originalFlagDataURL;
+        await new Promise(r => { img.onload = r; });
+        const pieceW = 100, pieceH = 100; // 3列2行，每个碎片100x100
+        const pieces = [];
+        for (let row = 0; row < 2; row++) {
+            for (let col = 0; col < 3; col++) {
+                const canvas = document.createElement('canvas');
+                canvas.width = pieceW;
+                canvas.height = pieceH;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, col*pieceW, row*pieceH, pieceW, pieceH, 0, 0, pieceW, pieceH);
+                pieces.push(canvas.toDataURL());
+            }
+        }
+        puzzlePieces = pieces;
+        puzzleSlotsState.fill(null);
+        piecesRemaining = [0,1,2,3,4,5];
+        currentSelectedPiece = null;
+        puzzleCompleted = false;
+        renderPuzzleUI();
+    }
+    function renderPuzzleUI() {
+        const slotsContainer = document.getElementById('puzzleSlots');
+        const piecesContainer = document.getElementById('puzzlePiecesList');
+        if (!slotsContainer || !piecesContainer) return;
+        slotsContainer.innerHTML = '';
+        for (let i=0; i<6; i++) {
+            const slotDiv = document.createElement('div');
+            slotDiv.className = 'slot';
+            if (puzzleSlotsState[i] !== null) {
+                slotDiv.classList.add('filled');
+                const img = document.createElement('img');
+                img.src = puzzlePieces[puzzleSlotsState[i]];
+                slotDiv.appendChild(img);
+            } else {
+                slotDiv.innerHTML = '⭐';
+                slotDiv.style.fontSize = '2rem';
+                slotDiv.style.color = '#e67342';
+            }
+            slotDiv.addEventListener('click', (function(idx) {
+                return function() {
+                    if (puzzleCompleted) { showFeedback('puzzleFeedback', '🎉 国旗拼图已完成！点新拼图继续玩 🎉', true); return; }
+                    if (currentSelectedPiece !== null && puzzleSlotsState[idx] === null) {
+                        if (currentSelectedPiece === idx) {
+                            puzzleSlotsState[idx] = currentSelectedPiece;
+                            const remIdx = piecesRemaining.indexOf(currentSelectedPiece);
+                            if (remIdx !== -1) piecesRemaining.splice(remIdx,1);
+                            currentSelectedPiece = null;
+                            renderPuzzleUI();
+                            if (puzzleSlotsState.every(v => v !== null)) {
+                                puzzleCompleted = true;
+                                showFeedback('puzzleFeedback', '🎉 太棒啦！庄严的五星红旗拼好了！你真厉害！ 🎉', true);
+                            } else {
+                                showFeedback('puzzleFeedback', '✅ 拼对了！继续完成五星红旗吧！', true);
+                            }
+                        } else {
+                            showFeedback('puzzleFeedback', '🌱 位置不对哦～ 仔细观察星星的位置再试试！', false);
+                            currentSelectedPiece = null;
+                            renderPuzzleUI();
+                        }
+                    } else if (currentSelectedPiece !== null && puzzleSlotsState[idx] !== null) {
+                        showFeedback('puzzleFeedback', '这个位置已经有拼图啦！试试别的空格～', false);
+                    } else if (currentSelectedPiece === null) {
+                        showFeedback('puzzleFeedback', '🌟 先点击右边的一块拼图，再点左边空位哦！', false);
+                    }
+                };
+            })(i));
+            slotsContainer.appendChild(slotDiv);
+        }
+        piecesContainer.innerHTML = '';
+        piecesRemaining.forEach(pIdx => {
+            const pieceDiv = document.createElement('div');
+            pieceDiv.className = 'piece-item';
+            if (currentSelectedPiece === pIdx) pieceDiv.classList.add('selected-piece');
+            const img = document.createElement('img');
+            img.src = puzzlePieces[pIdx];
+            pieceDiv.appendChild(img);
+            pieceDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (puzzleCompleted) return;
+                if (currentSelectedPiece === pIdx) {
+                    currentSelectedPiece = null;
+                } else {
+                    currentSelectedPiece = pIdx;
+                }
+                renderPuzzleUI();
+                if(currentSelectedPiece !== null) showFeedback('puzzleFeedback', '✨ 选中了一块拼图，点击左边对应的空位吧 ✨', true);
+            });
+            piecesContainer.appendChild(pieceDiv);
+        });
+    }
+
+    // 英雄问答 (保持不变)
+    const quizBank = [
+        { question: "🇨🇳 小英雄王二小把敌人带进了什么圈套？", options: ["八路军的埋伏圈", "悬崖边", "村子", "河边"], correct: 0, explain: "王二小把敌人带进埋伏圈，牺牲自己保护大家！" },
+        { question: "⭐ 海娃把鸡毛信藏在了哪里？", options: ["石头缝里", "羊尾巴下", "鞋子里", "树洞里"], correct: 1, explain: "聪明的海娃把信藏在绵羊尾巴下面！" },
+        { question: "📖 电影《闪闪的红星》小主人公叫什么？", options: ["潘冬子", "张嘎", "雨来", "刘胡兰"], correct: 0, explain: "潘冬子是个勇敢的红军小战士！" }
+    ];
+    let currentQuizIdx = 0, quizAnswered = false;
+    function loadQuiz() {
+        const q = quizBank[currentQuizIdx];
+        document.getElementById('quizQuestion').innerHTML = q.question;
+        const optsDiv = document.getElementById('quizOptions');
+        optsDiv.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const optBtn = document.createElement('div');
+            optBtn.className = 'quiz-opt';
+            optBtn.innerText = opt;
+            optBtn.addEventListener('click', () => {
+                if (quizAnswered) { showFeedback('quizFeedback', '🎈 已经答过啦！点击下一题继续挑战吧～', false); return; }
+                if (idx === q.correct) { showFeedback('quizFeedback', `🎉 完全正确！ ${q.explain} 你真棒！ 🎉`, true); quizAnswered = true; }
+                else { showFeedback('quizFeedback', `🌱 再想想～ ${q.explain} 小英雄的精神值得我们学习！`, false); }
+            });
+            optsDiv.appendChild(optBtn);
+        });
+        quizAnswered = false;
+    }
+    function nextQuiz() {
+        if (!quizAnswered && currentQuizIdx < quizBank.length-1) { showFeedback('quizFeedback', '💪 先回答当前问题再继续下一题哟！', false); return; }
+        if (currentQuizIdx + 1 < quizBank.length) { currentQuizIdx++; loadQuiz(); }
+        else {
+            if(quizAnswered) showFeedback('quizFeedback', '🏆 完成了所有英雄问答！你真是红色小英雄！🏆', true);
+            else showFeedback('quizFeedback', '⭐ 答完所有题目你就是小英雄啦！点击下一题继续', true);
+            if(currentQuizIdx+1 >= quizBank.length && !quizAnswered) return;
+            if(currentQuizIdx+1 >= quizBank.length) { setTimeout(()=>{ currentQuizIdx=0; loadQuiz(); showFeedback('quizFeedback','🎉 再来一轮，复习英雄知识！🎉',true); },1500); }
+        }
+    }
+
+    // 通用反馈与特效
+    function showFeedback(elementId, message, isGood) {
+        const el = document.getElementById(elementId);
+        if (el) { el.innerHTML = isGood ? `🎈 ${message} 🎈` : `🌼 ${message} 🌼`; el.style.background = isGood ? '#e6f7e3' : '#fff0e0';
+        setTimeout(()=>{ if(document.getElementById(elementId)) el.style.background = '#fffaec'; },800); }
+    }
+    function addStarEffect(target) {
+        target.style.transform = 'scale(0.96)';
+        setTimeout(() => { target.style.transform = ''; }, 120);
+        const starSpan = document.createElement('div');
+        starSpan.innerText = '⭐';
+        starSpan.style.position = 'fixed'; starSpan.style.pointerEvents = 'none'; starSpan.style.fontSize = '28px';
+        starSpan.style.left = (target.getBoundingClientRect().left + 40) + 'px';
+        starSpan.style.top = (target.getBoundingClientRect().top - 10) + 'px';
+        starSpan.style.zIndex = '999';
+        document.body.appendChild(starSpan);
+        setTimeout(() => starSpan.remove(), 500);
+    }
+
+    function switchGame(gameId) {
+        document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active-panel'));
+        document.getElementById(`${gameId}Panel`).classList.add('active-panel');
+        document.querySelectorAll('.game-tab').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.game-tab[data-game="${gameId}"]`).classList.add('active');
+        if (gameId === 'puzzle' && !originalFlagDataURL) initPuzzleGame();
+        if (gameId === 'quiz') loadQuiz();
+    }
+
+    // 事件绑定
+    document.querySelectorAll('.game-tab').forEach(btn => btn.addEventListener('click', () => switchGame(btn.getAttribute('data-game'))));
+    document.getElementById('resetFlagBtn')?.addEventListener('click', () => { renderFlags(); showFeedback('flagFeedback','再来找一找中国国旗吧！ ⭐',true); });
+    document.getElementById('resetBookBtn')?.addEventListener('click', resetBooks);
+    document.getElementById('resetPuzzleBtn')?.addEventListener('click', async () => { originalFlagDataURL = null; await initPuzzleGame(); showFeedback('puzzleFeedback','🔄 新的五星红旗拼图！拼出庄严国旗吧',true); });
+    document.getElementById('nextQuizBtn')?.addEventListener('click', nextQuiz);
+
+    // 启动所有模块
+    renderFlags();
+    renderBooks();
+    initPuzzleGame();
+    loadQuiz();
+</script>
+</body>
+</html>
