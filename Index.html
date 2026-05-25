@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>生日快乐</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      position: relative;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.75), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255,210,230,0.55), transparent 30%),
+        linear-gradient(135deg, #ffe4ef 0%, #fff7dc 45%, #e8f6ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5b4652;
+    }
+
+    /* 背景动态光效 */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(8px);
+      opacity: 0.7;
+      animation: drift 10s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .orb.one {
+      width: 180px;
+      height: 180px;
+      background: rgba(255, 153, 188, 0.35);
+      top: 8%;
+      left: 5%;
+    }
+
+    .orb.two {
+      width: 220px;
+      height: 220px;
+      background: rgba(170, 225, 255, 0.35);
+      bottom: 10%;
+      right: 8%;
+      animation-delay: 1.2s;
+    }
+
+    .orb.three {
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 239, 178, 0.45);
+      top: 18%;
+      right: 18%;
+      animation-delay: 2.2s;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(18px, -22px) scale(1.08); }
+    }
+
+    /* 3D 主卡片 */
+    .scene {
+      perspective: 1200px;
+      width: min(92vw, 860px);
+      z-index: 10;
+    }
+
+    .card {
+      position: relative;
+      min-height: 520px;
+      border-radius: 34px;
+      padding: 42px 28px 34px;
+      transform-style: preserve-3d;
+      background: rgba(255, 255, 255, 0.34);
+      border: 1px solid rgba(255,255,255,0.48);
+      box-shadow:
+        0 20px 50px rgba(255, 136, 171, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(255,255,255,0.04));
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 2;
+      transform: translateZ(20px);
+      text-align: center;
+    }
+
+    .top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.65);
+      color: #8b5a6b;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 20px rgba(255, 150, 180, 0.12);
+      margin-bottom: 18px;
+    }
+
+    .cake {
+      font-size: clamp(3.2rem, 9vw, 5rem);
+      margin: 10px 0 8px;
+      animation: bounce 2.1s infinite ease-in-out;
+      transform: translateZ(30px);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) translateZ(30px); }
+      50% { transform: translateY(-10px) translateZ(30px); }
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 4.4rem);
+      color: #ff5f87;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-shadow: 0 6px 18px rgba(255, 120, 160, 0.15);
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.22rem);
+      line-height: 1.9;
+      color: #715566;
+      margin-bottom: 22px;
+    }
+
+    .wish-box {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 22px 22px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.60), rgba(255,245,250,0.36));
+      border: 1px solid rgba(255,255,255,0.68);
+      box-shadow:
+        0 12px 30px rgba(255, 140, 170, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.75);
+      line-height: 2;
+      font-size: 1.03rem;
+      color: #634858;
+      transform: translateZ(18px);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px auto 0;
+      max-width: 660px;
+    }
+
+    .mini-card {
+      padding: 16px 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.34);
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 10px 24px rgba(255, 150, 180, 0.10);
+      font-size: 0.96rem;
+      color: #785869;
+    }
+
+    .mini-card span {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      color: #8a6575;
+      opacity: 0.95;
+    }
+
+    /* 右下角按钮 */
+    .video-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 99;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff7aa2, #ffb3c7);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      box-shadow: 0 14px 34px rgba(255, 122, 162, 0.35);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .video-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 18px 38px rgba(255, 122, 162, 0.45);
+    }
+
+    .video-btn .icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+    }
+
+    /* 视频弹窗 */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(40, 20, 30, 0.62);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 18px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(92vw, 920px);
+      border-radius: 26px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.14);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+      position: relative;
+      transform: scale(0.96);
+      animation: pop 0.28s ease forwards;
+    }
+
+    @keyframes pop {
+      to { transform: scale(1); }
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      color: white;
+      background: linear-gradient(135deg, rgba(255,122,162,0.75), rgba(255,179,199,0.55));
+    }
+
+    .close-btn {
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: rgba(255,255,255,0.22);
+      color: white;
+      font-size: 20px;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      background: #000;
+      max-height: 78vh;
+    }
+
+    /* 烟花粒子 */
+    .particle {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 300;
+      animation: explode 900ms ease-out forwards;
+    }
+
+    @keyframes explode {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* 飘浮元素 */
+    .balloon, .star {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.9;
+      animation: floatUp 12s linear infinite;
+    }
+
+    .balloon {
+      width: 40px;
+      height: 52px;
+      border-radius: 50% 50% 45% 45%;
+      background: linear-gradient(180deg, #ff8fab, #ffcad4);
+      box-shadow: inset -6px -10px 15px rgba(255,255,255,0.35);
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -18px;
+      width: 2px;
+      height: 20px;
+      background: rgba(120, 120, 120, 0.45);
+      transform: translateX(-50%);
+    }
+
+    .star {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      transform: rotate(45deg);
+      box-shadow: 0 0 14px rgba(255,255,255,0.9);
+    }
+
+    .star::before, .star::after {
+      content: "";
+      position: absolute;
+      background: inherit;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .star::after { transform: rotate(90deg); }
+
+    @keyframes floatUp {
+      0% { transform: translateY(120vh) rotate(0deg); opacity: 0; }
+      12% { opacity: 0.9; }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* 音乐控制 */
+    .music-tip {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 100;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.34);
+      border: 1px solid rgba(255,255,255,0.6);
+      color: #7b5d6d;
+      font-size: 0.9rem;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 700px) {
+      .card {
+        min-height: auto;
+        padding: 28px 16px 22px;
+        border-radius: 24px;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video-btn {
+        right: 14px;
+        bottom: 14px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+      }
+
+      video {
+        max-height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+
+  <div class="scene" id="scene">
+    <div class="card">
+      <div class="card-inner">
+        <div class="top-badge">✨ 送给特别的你 ✨</div>
+        <div class="cake">🎂</div>
+        <h1>徐博阳生日快乐</h1>
+        <div class="subtitle">祝温婉如玉，美丽动人，兰心蕙质的你生日快乐</div>
+
+        <div class="wish-box">
+          祝你新的一岁<br/>
+          有热爱，有自由，有惊喜，有人懂你。<br/>
+          愿温柔常在，快乐常伴，所行皆坦途，所遇皆美好<br/>
+          生日快乐，愿每一天都值得期待
+        </div>
+
+        <div class="mini-grid">
+          <div class="mini-card"><span>💗</span>温柔包围你</div>
+          <div class="mini-card"><span>🎁</span>惊喜属于你</div>
+          <div class="mini-card"><span>🌷</span>好运也属于你</div>
+        </div>
+
+        <div class="hint">提示：点击一下网页给自己放个烟花吧 ✨</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="video-btn" id="openVideoBtn">
+    <span class="icon">▶</span>
+    播放视频
+  </button>
+
+  <div class="music-tip" id="musicTip">🎵 正在尝试播放背景音乐...</div>
+
+  <!-- 视频弹窗 -->
+  <div class="modal" id="videoModal">
+    <div class="modal-box">
+      <div class="modal-top">
+        <div>生日视频</div>
+        <button class="close-btn" id="closeVideoBtn">×</button>
+      </div>
+      <video id="birthdayVideo" controls playsinline>
+        <source src="https://r2.xsimple-r2.com/files/494351/a5b5b592-4ca7-4cb9-a1ca-0d88a9c6975f.mp4" type="video/mp4">
+        你的浏览器不支持 video 标签。
+      </video>
+    </div>
+  </div>
+
+  <!-- 背景音乐：把下面 URL 换成你的 mp3 地址 -->
+  <audio id="bgm" loop>
+  <source src="https://r2.xsimple-r2.com/files/494352/dc3005ce-cbf7-4a09-991a-b2dc555693e2.mp3" type="audio/mpeg">
+</audio>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_1b60b8fd0a.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // 漂浮气球和星星
+    const body = document.body;
+    const total = 20;
+
+    for (let i = 0; i < total; i++) {
+      const el = document.createElement('div');
+      const isBalloon = Math.random() > 0.55;
+      el.className = isBalloon ? 'balloon' : 'star';
+
+      const size = isBalloon ? (26 + Math.random() * 22) : (10 + Math.random() * 10);
+      el.style.width = size + 'px';
+      el.style.height = isBalloon ? (size + 12) + 'px' : size + 'px';
+
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (8 + Math.random() * 8) + 's';
+      el.style.animationDelay = (-Math.random() * 12) + 's';
+
+      body.appendChild(el);
+    }
+
+    // 3D 视差轻微跟随
+    const scene = document.getElementById('scene');
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 10;
+      const y = (e.clientY / window.innerHeight - 0.5) * 8;
+      scene.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      scene.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+
+    // 点击烟花礼花效果
+    function createParticle(x, y, color) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.background = color;
+
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 60 + Math.random() * 90;
+      const dx = Math.cos(angle) * distance + 'px';
+      const dy = Math.sin(angle) * distance + 'px';
+      p.style.setProperty('--dx', dx);
+      p.style.setProperty('--dy', dy);
+
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 900);
+    }
+
+    document.addEventListener('click', (e) => {
+      const colors = ['#ff7aa2', '#ffd166', '#8ecae6', '#cdb4db', '#ffffff'];
+      for (let i = 0; i < 18; i++) {
+        createParticle(e.clientX, e.clientY, colors[Math.floor(Math.random() * colors.length)]);
+      }
+    });
+
+    // 视频弹窗
+    const modal = document.getElementById('videoModal');
+    const openVideoBtn = document.getElementById('openVideoBtn');
+    const closeVideoBtn = document.getElementById('closeVideoBtn');
+    const video = document.getElementById('birthdayVideo');
+
+    openVideoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      modal.classList.add('active');
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    });
+
+    closeVideoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      modal.classList.remove('active');
+      video.pause();
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        video.pause();
+      }
+    });
+
+    // 背景音乐自动尝试播放
+    const bgm = document.getElementById('bgm');
+    const musicTip = document.getElementById('musicTip');
+
+    window.addEventListener('load', async () => {
+      try {
+        await bgm.play();
+        musicTip.textContent = '🎵 背景音乐已开启';
+        setTimeout(() => musicTip.style.display = 'none', 2500);
+      } catch (err) {
+        musicTip.textContent = '🎵 点击任意位置可尝试播放背景音乐';
+      }
+    });
+
+    document.addEventListener('click', async () => {
+      if (bgm.paused) {
+        try {
+          await bgm.play();
+          musicTip.textContent = '🎵 背景音乐已开启';
+          setTimeout(() => musicTip.style.display = 'none', 2000);
+        } catch (err) {}
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
